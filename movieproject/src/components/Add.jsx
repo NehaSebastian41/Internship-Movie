@@ -1,9 +1,9 @@
 import { Box, Button, TextField } from '@mui/material'
 import axios from 'axios';
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Add = () => {
-
   const [form,setform]=useState({
     "movieName":'',
     "category":'',
@@ -11,10 +11,43 @@ const Add = () => {
     "releaseYear":''
   }) 
 
+  useEffect(()=>{
+    if(location.state!=null){
+      setform({...form,
+        movieName:location.state.movie.movieName,
+        category:location.state.movie.category,
+        director:location.state.movie.director,
+        releaseYear:location.state.movie.releaseYear,
+      })
+    }
+  },[])
+
+
+const location=useLocation();
+var navigate=useNavigate();
+
   let postData=()=>{
-    //console.log(form);
-    axios.post('http://localhost:4000/new-movie',form) .then((res)=>{alert('Movie data posted')})
-  }
+    if (location.state!= null){
+      axios.put('http://localhost:4000/movie-updation/'+location.state.movie._id,form)
+        .then((res)=>{
+        alert('Data updated');
+        navigate('/')
+        })
+        .catch((error)=>{
+          console.log(error);
+        })
+    }
+    
+    else{
+          //console.log(form);
+          axios.post('http://localhost:4000/new-movie',form) .then((res)=>{alert('Movie data posted')
+
+          }).catch()
+        }
+      }
+        
+          
+        
   function valueCap(e)
     {
       // console.log(e)
@@ -65,8 +98,8 @@ const Add = () => {
           required
           id="outlined-required"
           label="Required"
-          defaultValue="Release Year"
-          name='realeaseYear'
+          defaultValue="releaseYear"
+          name='releaseYear'
           value={form.releaseYear}
           onChange={valueCap}
         />
@@ -76,6 +109,9 @@ const Add = () => {
     
   )
 }
+
+
+  
 
 
 export default Add

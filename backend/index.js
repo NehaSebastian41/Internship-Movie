@@ -10,6 +10,7 @@ const movieData=require('./model/MovieData')
 
 app.use(express.json());
 app.use(cors());
+
 //API  endpoint fetch data from DB
 
 app.post('/new-movie',async(req,res)=>{
@@ -26,6 +27,8 @@ app.post('/new-movie',async(req,res)=>{
     }
 })
 
+
+
 app.get('/list-movies',async(req,res)=>{
     try{
             const data=await movieData.find();
@@ -38,8 +41,36 @@ app.get('/list-movies',async(req,res)=>{
 })
 
 
+//API end point for deleting the movie ducument
+
+app.delete('/movieremoval/:id',async(req,res)=>{
+    try{
+     await movieData.findByIdAndDelete(req.params.id);
+        res.send('Delete succesfully');
+
+    }
+    catch(error){
+        console.log(error);
+    }
+})
+
+
+//API end point for updating movie document
+
+app.put('/movie-updation/:id',async(req,res)=>{
+    try{
+        await movieData.findByIdAndUpdate(req.params.id);
+        res.send('Update succesfull')
+    }
+    catch(error){
+        console.log(error)
+
+    }
+})
+
 //checking whether the server is live or not
 
 app.listen(PORT,()=>{
     console.log("Server is running on Port Number:4000");
 })
+

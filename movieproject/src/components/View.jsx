@@ -1,6 +1,7 @@
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
+import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
+import {useNavigate} from 'react-router-dom';
 
 // const rows=[{"Director":"Dileesh Pothen","Movie":"Maheshinte Prathikaram","Genre":"comedy","Release Year":2005},
 //   {"Director":"Dileesh Pothen","Movie":"Maheshinte Prathikaram","Genre":"Action","Release Year":2006},
@@ -9,6 +10,7 @@ import axios from 'axios';
 // ];
 
 
+//get
 
 const View = () => {
   const [rows,setRows]=useState([]);
@@ -17,6 +19,31 @@ const View = () => {
    setRows(res.data);
 })
   },[])
+
+//edit
+
+var navigate=useNavigate()
+ let editMovie=(movie) =>
+ {
+  navigate('/add',{state:{movie}})
+ }
+
+
+  //delete
+
+  function deleteMovie(p)
+  {
+    axios.delete('http://localhost:4000/movieremoval/'+p)
+    .then((res)=>{
+      alert('Deleted')
+      window.location.reload()
+    })
+    .catch((error)=>
+    {
+      console.log(error);
+
+  })
+  }
   return (
     <TableContainer component={Paper}>
     <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -32,7 +59,7 @@ const View = () => {
       <TableBody>
         {rows.map((row) => (
           <TableRow
-            key={row.firstName}
+            key={row.movieName}
             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
           >
             <TableCell component="th" scope="row">
@@ -41,6 +68,8 @@ const View = () => {
             <TableCell align="right">{row.category}</TableCell>
             <TableCell align="right">{row.director}</TableCell>
             <TableCell align="right">{row.releaseYear}</TableCell>
+            <TableCell align="right"><Button variant='contained' color="inherit" onClick={()=>{editMovie(row)}}>Edit</Button></TableCell>
+            <TableCell align="right"><Button variant='contained' color="inherit" onClick={()=>{deleteMovie(row._id)}}>Delete</Button></TableCell>
             
           </TableRow>
         ))}
